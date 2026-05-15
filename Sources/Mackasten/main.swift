@@ -3,6 +3,6 @@ import AppKit
 let app = NSApplication.shared
 app.setActivationPolicy(.accessory)
 
-MenuBar.install(HelloWorldContent.make())
+MenuBar.install(FlaggedMailContent.make(from: FlaggedMailReader.read()))
 
 app.run()
