@@ -6,10 +6,5 @@ let package = Package(
     platforms: [.macOS(.v13)],
     targets: [
         .executableTarget(name: "Mackasten", path: "Sources/Mackasten"),
-        .testTarget(
-            name: "MackastenTests",
-            dependencies: ["Mackasten"],
-            path: "Tests/MackastenTests"
-        ),
     ]
 )

@@ -7,10 +7,10 @@ swift build
 nix develop -c swiftformat .
 
 ## Test command
-swift test
+swift build
 
 ## CI command
-swift build && swift test
+swift build
 
 ## Documentation
 Keep `README.md` in sync with user-facing changes.

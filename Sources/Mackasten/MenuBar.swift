@@ -3,7 +3,8 @@ import AppKit
 enum MenuBar {
     private static var statusItem: NSStatusItem?
 
-    static func install(_ content: MenuBarContent, into statusBar: NSStatusBar = .system) {
+    @discardableResult
+    static func install(_ content: MenuBarContent, into statusBar: NSStatusBar = .system) -> NSStatusItem {
         let item = statusBar.statusItem(withLength: NSStatusItem.variableLength)
         item.button?.image = NSImage(
             systemSymbolName: content.symbolName,
@@ -17,5 +18,6 @@ enum MenuBar {
         item.menu = menu
 
         statusItem = item
+        return item
     }
 }
