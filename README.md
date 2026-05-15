@@ -29,7 +29,11 @@ just fmt
 
 ## Tests
 
-`swift test` requires the XCTest framework, which on macOS ships only with full Xcode (not CommandLineTools). Once Xcode is on `PATH` (`xcode-select -p` points at `/Applications/Xcode.app/Contents/Developer`), a test target will be reinstated.
+```sh
+swift test
+```
+
+`Tests/MackastenTests/` covers `HelloWorldContent` (placeholder content shape) and `MenuBar.install` (the configured `NSStatusItem` reflects the input content). XCTest is bundled with full Xcode — CommandLineTools alone is insufficient.
 
 ## Project layout
 
