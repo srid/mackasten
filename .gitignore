@@ -1,6 +1,11 @@
 /.do-results.json
 /apm_modules/
 
-
 # APM dependencies
 apm_modules/
+
+# Swift / SwiftPM
+/.build/
+/.swiftpm/
+Package.resolved
+*.xcodeproj/

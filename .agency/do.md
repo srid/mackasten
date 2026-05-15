@@ -4,7 +4,7 @@
 swift build
 
 ## Format command
-swiftformat .
+nix develop -c swiftformat .
 
 ## Test command
 swift test
