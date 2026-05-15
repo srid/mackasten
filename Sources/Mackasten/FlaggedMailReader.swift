@@ -1,9 +1,17 @@
 import Foundation
 
-/// Reads flagged messages from Apple Mail via AppleScript. Returns an empty list on any failure
-/// (Mail not installed, Automation permission denied, no flagged messages).
-///
-/// Calling this triggers a macOS Automation permission prompt the first time the app runs.
+/// The three states the AppleScript boundary can actually distinguish.
+/// Finer error discrimination (TCC denial vs. compile error vs. arbitrary runtime
+/// failure) is not available from NSAppleScript, so the enum stays at three cases.
+enum MailReadResult {
+    case success([FlaggedMail])
+    case mailNotInstalled
+    case scriptFailed
+}
+
+/// Reads flagged messages from Apple Mail via AppleScript.
+/// Calling this triggers a macOS Automation permission prompt the first time the app runs;
+/// the prompt result surfaces here as `.scriptFailed` if the user denies it.
 enum FlaggedMailReader {
     private static let script = """
     tell application "Mail"
@@ -19,19 +27,19 @@ enum FlaggedMailReader {
     end tell
     """
 
-    static func read() -> [FlaggedMail] {
-        guard let appleScript = NSAppleScript(source: script) else { return [] }
+    static func read() -> MailReadResult {
+        guard let appleScript = NSAppleScript(source: script) else { return .mailNotInstalled }
         var error: NSDictionary?
         let result = appleScript.executeAndReturnError(&error)
-        guard error == nil else { return [] }
+        guard error == nil else { return .scriptFailed }
         let count = result.numberOfItems
-        guard count > 0 else { return [] }
+        guard count > 0 else { return .success([]) }
         var mails: [FlaggedMail] = []
         for index in 1 ... count {
             if let subject = result.atIndex(index)?.stringValue {
                 mails.append(FlaggedMail(subject: subject))
             }
         }
-        return mails
+        return .success(mails)
     }
 }

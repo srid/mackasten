@@ -10,6 +10,14 @@ let quit = NSMenuItem(
 )
 let footer: [NSMenuItem] = [.separator(), quit]
 
-MenuBar.install(FlaggedMailContent.make(from: FlaggedMailReader.read(), footer: footer))
+let mails: [FlaggedMail]
+switch FlaggedMailReader.read() {
+case let .success(messages):
+    mails = messages
+case .mailNotInstalled, .scriptFailed:
+    mails = []
+}
+
+MenuBar.install(FlaggedMailContent.make(from: mails, footer: footer))
 
 app.run()
