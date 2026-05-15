@@ -35,16 +35,16 @@ just fmt
 swift test
 ```
 
-`Tests/MackastenTests/` covers `FlaggedMailContent` (the pure builder that turns a list of flagged mails into menu items, in both the empty and populated cases) and `MenuBar.install` (the configured `NSStatusItem` reflects the input content). The AppleScript boundary in `FlaggedMailReader` is not unit-tested — it requires a live `Mail.app`. XCTest is bundled with full Xcode — CommandLineTools alone is insufficient.
+`Tests/MackastenTests/` covers `FlaggedMailContent` (the pure builder that turns a list of mail messages into menu items, in the empty / populated / with-footer cases) and `MenuBar.install` (the configured `NSStatusItem` reflects the input content). The AppleScript boundary in `MailReader` is not unit-tested — it requires a live `Mail.app`. XCTest is bundled with full Xcode — CommandLineTools alone is insufficient.
 
 ## Project layout
 
-- `Sources/Mackasten/main.swift` — process entry point. Sets the activation policy to `.accessory` (no Dock icon), reads flagged mail, and installs the menubar.
+- `Sources/Mackasten/main.swift` — composition root. Sets `.accessory` activation policy, calls `MailReader.read()`, builds the Quit footer, hands both to the content builder, and installs the menubar.
 - `Sources/Mackasten/MenuBar.swift` — AppKit wiring: builds the `NSStatusItem`, attaches the menu, retains the item internally.
 - `Sources/Mackasten/MenuBarContent.swift` — pure-data type describing what to put on the menubar (icon symbol, accessibility description, menu items).
-- `Sources/Mackasten/FlaggedMail.swift` — a flagged message read from Mail (subject only, for now).
-- `Sources/Mackasten/FlaggedMailReader.swift` — AppleScript boundary. Calls `Mail.app` for messages in the unified inbox with `flagged status is true`. Returns `[]` on any failure.
-- `Sources/Mackasten/FlaggedMailContent.swift` — pure builder turning `[FlaggedMail]` into a `MenuBarContent`. Renders an "No flagged mail" placeholder when the list is empty.
+- `Sources/Mackasten/MailMessage.swift` — a message read from Mail (subject only, for now).
+- `Sources/Mackasten/MailReader.swift` — AppleScript boundary. Iterates every account's inbox, returns a `MailReadResult` (`success([MailMessage])`, `mailNotInstalled`, `scriptFailed`). Takes a `MailFilter` parameter — only `.flagged` is wired today.
+- `Sources/Mackasten/FlaggedMailContent.swift` — pure builder turning `[MailMessage] + footer` into a `MenuBarContent`. Renders a "No flagged mail" placeholder when the list is empty. Lifecycle items like Quit live in `main.swift`, not here.
 - `justfile` — common dev recipes (`run`, `build`, `fmt`, `clean`).
 - `flake.nix` — Nix devShell (`swiftformat`).
 
