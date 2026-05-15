@@ -1,13 +1,14 @@
 import AppKit
 
-/// Builds the menu bar content from the list of flagged mails read out of Apple Mail.
+/// Builds the flagged-mail portion of the menu bar (icon + the message-list items).
+/// App-lifecycle fixtures like the Quit footer live in the composition root, not here.
 /// Pure — the AppleScript boundary lives in `FlaggedMailReader`.
 enum FlaggedMailContent {
     static let symbolName = "flag"
     static let accessibilityDescription = "Mackasten — Flagged mail"
     static let emptyPlaceholder = "No flagged mail"
 
-    static func make(from mails: [FlaggedMail]) -> MenuBarContent {
+    static func make(from mails: [FlaggedMail], footer: [NSMenuItem] = []) -> MenuBarContent {
         let mailItems: [NSMenuItem] = mails.isEmpty
             ? [disabledItem(title: emptyPlaceholder)]
             : mails.map { disabledItem(title: $0.subject) }
@@ -15,14 +16,7 @@ enum FlaggedMailContent {
         return MenuBarContent(
             symbolName: symbolName,
             accessibilityDescription: accessibilityDescription,
-            menuItems: mailItems + [
-                NSMenuItem.separator(),
-                NSMenuItem(
-                    title: "Quit",
-                    action: #selector(NSApplication.terminate(_:)),
-                    keyEquivalent: "q"
-                ),
-            ]
+            menuItems: mailItems + footer
         )
     }
 
