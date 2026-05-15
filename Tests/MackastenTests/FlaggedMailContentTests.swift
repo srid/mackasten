@@ -18,8 +18,8 @@ final class FlaggedMailContentTests: XCTestCase {
 
     func testPopulatedListShowsEachSubjectAsDisabledItem() {
         let mails = [
-            FlaggedMail(subject: "Pay quarterly taxes"),
-            FlaggedMail(subject: "Review PR #42"),
+            MailMessage(subject: "Pay quarterly taxes"),
+            MailMessage(subject: "Review PR #42"),
         ]
         let items = FlaggedMailContent.make(from: mails).menuItems
         XCTAssertEqual(items.count, 2)
@@ -31,7 +31,7 @@ final class FlaggedMailContentTests: XCTestCase {
 
     func testFooterIsAppendedAfterMailItems() {
         let footer = [NSMenuItem.separator(), NSMenuItem(title: "Quit", action: nil, keyEquivalent: "q")]
-        let items = FlaggedMailContent.make(from: [FlaggedMail(subject: "x")], footer: footer).menuItems
+        let items = FlaggedMailContent.make(from: [MailMessage(subject: "x")], footer: footer).menuItems
         XCTAssertEqual(items.count, 3)
         XCTAssertEqual(items[0].title, "x")
         XCTAssertTrue(items[1].isSeparatorItem)

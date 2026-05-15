@@ -4,15 +4,16 @@ import Foundation
 /// Finer error discrimination (TCC denial vs. compile error vs. arbitrary runtime
 /// failure) is not available from NSAppleScript, so the enum stays at three cases.
 enum MailReadResult {
-    case success([FlaggedMail])
+    case success([MailMessage])
     case mailNotInstalled
     case scriptFailed
 }
 
-/// Reads flagged messages from Apple Mail via AppleScript.
+/// Reads messages from Apple Mail via AppleScript. Today it reads flagged messages;
+/// the filter is hardcoded for now and will be lifted into a parameter in a follow-up commit.
 /// Calling this triggers a macOS Automation permission prompt the first time the app runs;
 /// the prompt result surfaces here as `.scriptFailed` if the user denies it.
-enum FlaggedMailReader {
+enum MailReader {
     private static let script = """
     tell application "Mail"
         set output to {}
@@ -34,10 +35,10 @@ enum FlaggedMailReader {
         guard error == nil else { return .scriptFailed }
         let count = result.numberOfItems
         guard count > 0 else { return .success([]) }
-        var mails: [FlaggedMail] = []
+        var mails: [MailMessage] = []
         for index in 1 ... count {
             if let subject = result.atIndex(index)?.stringValue {
-                mails.append(FlaggedMail(subject: subject))
+                mails.append(MailMessage(subject: subject))
             }
         }
         return .success(mails)

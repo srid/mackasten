@@ -10,8 +10,8 @@ let quit = NSMenuItem(
 )
 let footer: [NSMenuItem] = [.separator(), quit]
 
-let mails: [FlaggedMail]
-switch FlaggedMailReader.read() {
+let mails: [MailMessage]
+switch MailReader.read() {
 case let .success(messages):
     mails = messages
 case .mailNotInstalled, .scriptFailed:
