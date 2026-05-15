@@ -43,3 +43,7 @@ swift test
 - `Sources/Mackasten/HelloWorldContent.swift` — placeholder content. This is the seam where Mail / Reminders / Calendar integrations will land.
 - `justfile` — common dev recipes (`run`, `build`, `fmt`, `clean`).
 - `flake.nix` — Nix devShell (`swiftformat`).
+
+## License
+
+[AGPL-3.0](LICENSE).
