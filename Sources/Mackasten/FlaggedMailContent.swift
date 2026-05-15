@@ -8,16 +8,28 @@ enum FlaggedMailContent {
     static let accessibilityDescription = "Mackasten — Flagged mail"
     static let emptyPlaceholder = "No flagged mail"
 
-    static func make(from mails: [MailMessage], footer: [NSMenuItem] = []) -> MenuBarContent {
+    static func make(
+        from mails: [MailMessage],
+        onSelect: MailItemAction? = nil,
+        footer: [NSMenuItem] = []
+    ) -> MenuBarContent {
         let mailItems: [NSMenuItem] = mails.isEmpty
             ? [disabledItem(title: emptyPlaceholder)]
-            : mails.map { disabledItem(title: $0.subject) }
+            : mails.map { mailItem(for: $0, onSelect: onSelect) }
 
         return MenuBarContent(
             symbolName: symbolName,
             accessibilityDescription: accessibilityDescription,
             menuItems: mailItems + footer
         )
+    }
+
+    private static func mailItem(for mail: MailMessage, onSelect: MailItemAction?) -> NSMenuItem {
+        let item = NSMenuItem(title: mail.subject, action: onSelect?.selector, keyEquivalent: "")
+        item.target = onSelect?.target
+        item.representedObject = mail.id
+        item.isEnabled = onSelect != nil
+        return item
     }
 
     private static func disabledItem(title: String) -> NSMenuItem {

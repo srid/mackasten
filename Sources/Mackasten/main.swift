@@ -18,6 +18,12 @@ case .mailNotInstalled, .scriptFailed:
     mails = []
 }
 
-MenuBar.install(FlaggedMailContent.make(from: mails, footer: footer))
+let mailActionHandler = MailItemActionHandler()
+let onSelect = MailItemAction(
+    target: mailActionHandler,
+    selector: #selector(MailItemActionHandler.openMessage(_:))
+)
+
+MenuBar.install(FlaggedMailContent.make(from: mails, onSelect: onSelect, footer: footer))
 
 app.run()
