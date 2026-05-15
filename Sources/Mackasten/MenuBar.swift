@@ -5,8 +5,9 @@ enum MenuBar {
     static let symbolName = "checklist"
     static let accessibilityDescription = "Mackasten"
 
-    @discardableResult
-    static func install(into statusBar: NSStatusBar = .system) -> NSStatusItem {
+    private static var statusItem: NSStatusItem?
+
+    static func install(into statusBar: NSStatusBar = .system) {
         let item = statusBar.statusItem(withLength: NSStatusItem.variableLength)
         item.button?.image = NSImage(
             systemSymbolName: symbolName,
@@ -23,6 +24,6 @@ enum MenuBar {
         ))
         item.menu = menu
 
-        return item
+        statusItem = item
     }
 }
