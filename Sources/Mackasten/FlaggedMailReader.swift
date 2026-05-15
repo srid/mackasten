@@ -7,10 +7,9 @@ import Foundation
 enum FlaggedMailReader {
     private static let script = """
     tell application "Mail"
-        set output to ""
-        set theMessages to (every message of inbox whose flagged status is true)
-        repeat with msg in theMessages
-            set output to output & (subject of msg) & linefeed
+        set output to {}
+        repeat with msg in (every message of inbox whose flagged status is true)
+            set end of output to subject of msg
         end repeat
         return output
     end tell
@@ -20,9 +19,15 @@ enum FlaggedMailReader {
         guard let appleScript = NSAppleScript(source: script) else { return [] }
         var error: NSDictionary?
         let result = appleScript.executeAndReturnError(&error)
-        guard error == nil, let raw = result.stringValue else { return [] }
-        return raw
-            .split(whereSeparator: \.isNewline)
-            .map { FlaggedMail(subject: String($0)) }
+        guard error == nil else { return [] }
+        let count = result.numberOfItems
+        guard count > 0 else { return [] }
+        var mails: [FlaggedMail] = []
+        for index in 1 ... count {
+            if let subject = result.atIndex(index)?.stringValue {
+                mails.append(FlaggedMail(subject: subject))
+            }
+        }
+        return mails
     }
 }
