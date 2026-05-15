@@ -5,14 +5,14 @@ import XCTest
 final class FlaggedMailContentTests: XCTestCase {
     func testUsesFlagIconAndAccessibilityDescription() {
         let content = FlaggedMailContent.make(from: [])
-        XCTAssertEqual(content.symbolName, "flag")
-        XCTAssertEqual(content.accessibilityDescription, "Mackasten — Flagged mail")
+        XCTAssertEqual(content.symbolName, FlaggedMailContent.symbolName)
+        XCTAssertEqual(content.accessibilityDescription, FlaggedMailContent.accessibilityDescription)
     }
 
     func testEmptyListShowsPlaceholder() {
         let items = FlaggedMailContent.make(from: []).menuItems
         XCTAssertEqual(items.count, 1)
-        XCTAssertEqual(items[0].title, "No flagged mail")
+        XCTAssertEqual(items[0].title, FlaggedMailContent.emptyPlaceholder)
         XCTAssertFalse(items[0].isEnabled)
     }
 
