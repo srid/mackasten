@@ -44,13 +44,9 @@ enum MailReader {
         let result = appleScript.executeAndReturnError(&error)
         guard error == nil else { return .scriptFailed }
         let count = result.numberOfItems
-        guard count > 0 else { return .success([]) }
-        var mails: [MailMessage] = []
-        for index in 1 ... count {
-            if let subject = result.atIndex(index)?.stringValue {
-                mails.append(MailMessage(subject: subject))
-            }
-        }
+        let mails = count > 0
+            ? (1 ... count).compactMap { result.atIndex($0)?.stringValue }.map { MailMessage(subject: $0) }
+            : []
         return .success(mails)
     }
 }
