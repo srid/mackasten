@@ -26,15 +26,14 @@ enum MailReadResult {
 /// the prompt result surfaces here as `.scriptFailed` if the user denies it.
 enum MailReader {
     static func read(filter: MailFilter = .flagged) -> MailReadResult {
+        // `inbox` at the top level is Mail's unified inbox — it spans every account
+        // by definition. Per-account iteration (`inbox of acct`) is not a thing in
+        // Mail's scripting suite; that path errors silently with -1728.
         let source = """
         tell application "Mail"
             set output to {}
-            repeat with acct in every account
-                try
-                    repeat with msg in (every message of inbox of acct whose \(filter.appleScriptPredicate))
-                        set end of output to subject of msg
-                    end repeat
-                end try
+            repeat with msg in (every message of inbox whose \(filter.appleScriptPredicate))
+                set end of output to subject of msg
             end repeat
             return output
         end tell
