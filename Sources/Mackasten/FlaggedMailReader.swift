@@ -8,8 +8,12 @@ enum FlaggedMailReader {
     private static let script = """
     tell application "Mail"
         set output to {}
-        repeat with msg in (every message of inbox whose flagged status is true)
-            set end of output to subject of msg
+        repeat with acct in every account
+            try
+                repeat with msg in (every message of inbox of acct whose flagged status is true)
+                    set end of output to subject of msg
+                end repeat
+            end try
         end repeat
         return output
     end tell
