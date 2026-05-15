@@ -1,0 +1,29 @@
+lockfile_version: '1'
+generated_at: '2026-05-15T20:46:33.928886+00:00'
+apm_version: 0.13.0
+dependencies:
+- repo_url: srid/agency
+  host: github.com
+  resolved_commit: b05ccf8b890ed7350df010d44ed272210cca82cb
+  resolved_ref: master
+  package_type: apm_package
+  deployed_files:
+  - .claude/agents/hickey.md
+  - .claude/agents/lowy.md
+  - .claude/hooks/agency/scripts/do-stop-guard.sh
+  - .claude/rules/apm-sources.md
+  - .claude/skills/code-police
+  - .claude/skills/do
+  - .claude/skills/elegance
+  - .claude/skills/fact-check
+  - .claude/skills/forge-pr
+  - .claude/skills/hickey
+  - .claude/skills/lowy
+  - .claude/skills/ralph
+  - .claude/skills/talk
+  deployed_file_hashes:
+    .claude/agents/hickey.md: sha256:10d9a4350a85752dc6658af8e0efb3d8be41803a2b6c73464e3d5b7a840435ad
+    .claude/agents/lowy.md: sha256:05aff7f6a91149a42c1fb9a3ca382a6f77bc39ac8a8d45436d443dd3349fb11e
+    .claude/hooks/agency/scripts/do-stop-guard.sh: sha256:cb033f86c15ffd3d09d8e4b74a61f55a70def4cc4131cc013b7368a2d23f3f33
+    .claude/rules/apm-sources.md: sha256:65640c481c347cc4edf50603f784d0b448b6395acc43419a4f8ad0c53de2db4b
+  content_hash: sha256:0b9a8edbb00aafa615dcf2a8420f7f5b3057f5306ebcf0faadaa9fd803513258
