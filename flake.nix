@@ -5,16 +5,15 @@
 
   outputs = { self, nixpkgs }:
     let
-      systems = [ "aarch64-darwin" "x86_64-darwin" ];
-      forAllSystems = nixpkgs.lib.genAttrs systems;
+      system = "aarch64-darwin";
+      pkgs = nixpkgs.legacyPackages.${system};
     in
     {
-      devShells = forAllSystems (system:
-        let pkgs = nixpkgs.legacyPackages.${system};
-        in {
-          default = pkgs.mkShell {
-            packages = [ pkgs.swiftformat ];
-          };
-        });
+      devShells.${system}.default = pkgs.mkShell {
+        packages = [
+          pkgs.swiftformat
+          pkgs.just
+        ];
+      };
     };
 }
