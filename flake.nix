@@ -10,10 +10,7 @@
     in
     {
       devShells.${system}.default = pkgs.mkShell {
-        packages = [
-          pkgs.swiftformat
-          pkgs.just
-        ];
+        packages = [ pkgs.swiftformat ];
       };
     };
 }
