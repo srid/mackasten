@@ -37,17 +37,13 @@ enum ReminderReader {
         var error: NSDictionary?
         let result = appleScript.executeAndReturnError(&error)
         guard error == nil else { return .scriptFailed }
-        let count = result.numberOfItems
-        let reminders: [ReminderItem] = count > 0
-            ? (1 ... count).compactMap { index in
-                guard
-                    let row = result.atIndex(index),
-                    let id = row.atIndex(1)?.stringValue,
-                    let title = row.atIndex(2)?.stringValue
-                else { return nil }
-                return ReminderItem(id: id, title: title)
-            }
-            : []
+        let reminders = AppleScriptResultParser.parseRows(result) { row in
+            guard
+                let id = row.atIndex(1)?.stringValue,
+                let title = row.atIndex(2)?.stringValue
+            else { return nil }
+            return ReminderItem(id: id, title: title)
+        }
         return .success(reminders)
     }
 }

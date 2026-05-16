@@ -36,16 +36,10 @@ enum MailReader {
         var error: NSDictionary?
         let result = appleScript.executeAndReturnError(&error)
         guard error == nil else { return .scriptFailed }
-        let count = result.numberOfItems
-        let mails: [MailMessage] = count > 0
-            ? (1 ... count).compactMap { index in
-                guard
-                    let row = result.atIndex(index),
-                    let subject = row.atIndex(2)?.stringValue
-                else { return nil }
-                return MailMessage(id: Int(row.atIndex(1)?.int32Value ?? 0), subject: subject)
-            }
-            : []
+        let mails = AppleScriptResultParser.parseRows(result) { row in
+            guard let subject = row.atIndex(2)?.stringValue else { return nil }
+            return MailMessage(id: Int(row.atIndex(1)?.int32Value ?? 0), subject: subject)
+        }
         return .success(mails)
     }
 }
