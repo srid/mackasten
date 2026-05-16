@@ -23,5 +23,7 @@ final class MailItemActionHandler: NSObject {
         guard let script = NSAppleScript(source: source) else { return }
         var error: NSDictionary?
         script.executeAndReturnError(&error)
+        // Best-effort open — log failures but don't propagate (no UI feedback path).
+        if let error { NSLog("[MailItemActionHandler] AppleScript failed: %@", error) }
     }
 }
