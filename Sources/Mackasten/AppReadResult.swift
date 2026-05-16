@@ -2,6 +2,12 @@
 /// surfaces no finer error discrimination (TCC denial vs compile error vs runtime
 /// failure all land as `scriptFailed`). Generic over the item type so Mail and
 /// Reminders share one shape.
+///
+/// `appNotInstalled` is a structural placeholder: in practice `NSAppleScript(source:)`
+/// only returns nil for a nil/empty source string, not for a missing target app, so
+/// real "Mail.app not installed" failures surface as `.scriptFailed`. The case is
+/// kept so future readers with a richer install probe can populate it without
+/// breaking the API.
 enum AppReadResult<T> {
     case success([T])
     case appNotInstalled
