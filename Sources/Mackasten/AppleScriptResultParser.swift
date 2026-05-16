@@ -9,6 +9,7 @@ enum AppleScriptResultParser {
         _ build: (NSAppleEventDescriptor) -> T?
     ) -> [T] {
         let count = descriptor.numberOfItems
+        // `1...0` is an invalid ClosedRange and crashes at runtime — guard before use.
         guard count > 0 else { return [] }
         return (1 ... count).compactMap { index in
             guard let row = descriptor.atIndex(index) else { return nil }
