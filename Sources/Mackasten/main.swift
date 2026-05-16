@@ -9,21 +9,8 @@ let quit = NSMenuItem(
     keyEquivalent: "q"
 )
 
-let mails: [MailMessage]
-switch MailReader.read() {
-case let .success(messages):
-    mails = messages
-case .mailNotInstalled, .scriptFailed:
-    mails = []
-}
-
-let reminders: [ReminderItem]
-switch ReminderReader.read() {
-case let .success(items):
-    reminders = items
-case .remindersNotInstalled, .scriptFailed:
-    reminders = []
-}
+let mails = MailReader.read().items
+let reminders = ReminderReader.read().items
 
 let mailActionHandler = MailItemActionHandler()
 let mailOnSelect = MenuItemAction(

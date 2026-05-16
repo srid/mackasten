@@ -13,19 +13,11 @@ enum ReminderFilter {
     }
 }
 
-/// The three states the AppleScript boundary can actually distinguish, matching
-/// `MailReadResult` — NSAppleScript does not surface finer error discrimination.
-enum ReminderReadResult {
-    case success([ReminderItem])
-    case remindersNotInstalled
-    case scriptFailed
-}
-
 /// Reads items from Apple Reminders via AppleScript, filtered by `ReminderFilter`.
 /// Calling this triggers a macOS Automation permission prompt the first time the app
 /// runs; denying it surfaces here as `.scriptFailed`.
 enum ReminderReader {
-    static func read(filter: ReminderFilter = .flaggedIncomplete) -> ReminderReadResult {
+    static func read(filter: ReminderFilter = .flaggedIncomplete) -> AppReadResult<ReminderItem> {
         // Reminders' top-level `reminders` collection can be unreliable across
         // accounts/lists, so iterate `lists` explicitly. Each row is a 2-element
         // AppleScript list {id, name}; on the Swift side every top-level descriptor
@@ -41,7 +33,7 @@ enum ReminderReader {
             return output
         end tell
         """
-        guard let appleScript = NSAppleScript(source: source) else { return .remindersNotInstalled }
+        guard let appleScript = NSAppleScript(source: source) else { return .appNotInstalled }
         var error: NSDictionary?
         let result = appleScript.executeAndReturnError(&error)
         guard error == nil else { return .scriptFailed }
