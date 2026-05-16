@@ -1,24 +1,18 @@
 import AppKit
 import Foundation
 
-/// Couples the target and selector that a menu item should fire on click. They only
-/// make sense together — keeping them in one value stops the content builder from
-/// taking two correlated parameters.
-struct MailItemAction {
-    let target: AnyObject
-    let selector: Selector
-}
-
 /// AppKit target that opens a Mail message by id when its menu item is clicked.
-/// Lives at the composition root and is passed to `FlaggedMailContent.make`.
+/// Lives at the composition root and is passed to `SourceAppContent.menuItems`.
 /// Held as a strong reference by `main.swift` — NSMenuItem.target is weak.
 final class MailItemActionHandler: NSObject {
     @objc func openMessage(_ sender: Any?) {
-        guard
-            let item = sender as? NSMenuItem,
-            let id = item.representedObject as? Int
-        else { return }
-        Self.open(messageId: id)
+        MenuClickHandler.dispatch(sender: sender) { menuId in
+            guard let id = Int(menuId) else {
+                NSLog("[MailItemActionHandler] menuId is not a valid integer: %@", menuId)
+                return
+            }
+            Self.open(messageId: id)
+        }
     }
 
     private static func open(messageId: Int) {
@@ -32,5 +26,7 @@ final class MailItemActionHandler: NSObject {
         guard let script = NSAppleScript(source: source) else { return }
         var error: NSDictionary?
         script.executeAndReturnError(&error)
+        // Best-effort open — log failures but don't propagate (no UI feedback path).
+        if let error { NSLog("[MailItemActionHandler] AppleScript failed: %@", error) }
     }
 }

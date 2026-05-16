@@ -1,6 +1,6 @@
 import AppKit
 
-/// Manages the single persistent NSStatusItem in the system menu bar.
+/// Manages the single persistent NSStatusItem Mackasten owns in the system menu bar.
 enum MenuBar {
     /// Retained to keep the status item alive; AppKit deallocates unreferenced items.
     private static var statusItem: NSStatusItem?

@@ -12,20 +12,11 @@ enum MailFilter {
     }
 }
 
-/// The three states the AppleScript boundary can actually distinguish.
-/// Finer error discrimination (TCC denial vs. compile error vs. arbitrary runtime
-/// failure) is not available from NSAppleScript, so the enum stays at three cases.
-enum MailReadResult {
-    case success([MailMessage])
-    case mailNotInstalled
-    case scriptFailed
-}
-
 /// Reads messages from Apple Mail via AppleScript, filtered by `MailFilter`.
 /// Calling this triggers a macOS Automation permission prompt the first time the app runs;
 /// the prompt result surfaces here as `.scriptFailed` if the user denies it.
 enum MailReader {
-    static func read(filter: MailFilter = .flagged) -> MailReadResult {
+    static func read(filter: MailFilter = .flagged) -> AppReadResult<MailMessage> {
         // `inbox` at the top level is Mail's unified inbox — it spans every account
         // by definition. Per-account iteration (`inbox of acct`) is not a thing in
         // Mail's scripting suite; that path errors silently with -1728.
@@ -41,20 +32,17 @@ enum MailReader {
             return output
         end tell
         """
-        guard let appleScript = NSAppleScript(source: source) else { return .mailNotInstalled }
+        guard let appleScript = NSAppleScript(source: source) else { return .appNotInstalled }
         var error: NSDictionary?
         let result = appleScript.executeAndReturnError(&error)
         guard error == nil else { return .scriptFailed }
-        let count = result.numberOfItems
-        let mails: [MailMessage] = count > 0
-            ? (1 ... count).compactMap { index in
-                guard
-                    let row = result.atIndex(index),
-                    let subject = row.atIndex(2)?.stringValue
-                else { return nil }
-                return MailMessage(id: Int(row.atIndex(1)?.int32Value ?? 0), subject: subject)
-            }
-            : []
+        let mails: [MailMessage] = AppleScriptResultParser.parseRows(result) { row in
+            guard
+                let idValue = row.atIndex(1)?.int32Value,
+                let subject = row.atIndex(2)?.stringValue
+            else { return nil }
+            return MailMessage(id: Int(idValue), subject: subject)
+        }
         return .success(mails)
     }
 }

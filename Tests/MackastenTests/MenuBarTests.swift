@@ -6,7 +6,7 @@ final class MenuBarTests: XCTestCase {
     func testInstallReflectsContentOnStatusItem() {
         let probeItem = NSMenuItem(title: "probe", action: nil, keyEquivalent: "")
         let content = MenuBarContent(
-            symbolName: "checklist",
+            symbolName: "flag",
             accessibilityDescription: "probe-desc",
             menuItems: [probeItem]
         )

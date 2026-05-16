@@ -8,22 +8,40 @@ let quit = NSMenuItem(
     action: #selector(NSApplication.terminate(_:)),
     keyEquivalent: "q"
 )
-let footer: [NSMenuItem] = [.separator(), quit]
 
-let mails: [MailMessage]
-switch MailReader.read() {
-case let .success(messages):
-    mails = messages
-case .mailNotInstalled, .scriptFailed:
-    mails = []
-}
+let mails: [MailMessage] = MailReader.read().items
+let reminders: [ReminderItem] = ReminderReader.read().items
 
 let mailActionHandler = MailItemActionHandler()
-let onSelect = MailItemAction(
+let mailOnSelect = MenuItemAction(
     target: mailActionHandler,
     selector: #selector(MailItemActionHandler.openMessage(_:))
 )
 
-MenuBar.install(FlaggedMailContent.make(from: mails, onSelect: onSelect, footer: footer))
+let reminderActionHandler = ReminderItemActionHandler()
+let reminderOnSelect = MenuItemAction(
+    target: reminderActionHandler,
+    selector: #selector(ReminderItemActionHandler.openReminder(_:))
+)
+
+let mailRows = SourceAppContent.menuItems(
+    from: mails,
+    rowSymbolName: "envelope",
+    emptyPlaceholder: "No flagged mail",
+    onSelect: mailOnSelect
+)
+let reminderRows = SourceAppContent.menuItems(
+    from: reminders,
+    rowSymbolName: "circle",
+    emptyPlaceholder: "No reminders requiring focus",
+    onSelect: reminderOnSelect
+)
+let menuItems = mailRows + [.separator()] + reminderRows + [.separator(), quit]
+
+MenuBar.install(MenuBarContent(
+    symbolName: "flag",
+    accessibilityDescription: "Mackasten — Items requiring focus",
+    menuItems: menuItems
+))
 
 app.run()
