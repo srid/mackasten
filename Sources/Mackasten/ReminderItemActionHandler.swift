@@ -12,6 +12,10 @@ final class ReminderItemActionHandler: NSObject {
     }
 
     private static func open(reminderId: String) {
+        // `ReminderReader` avoids the top-level `reminders` collection because enumerating
+        // it is unreliable across accounts/lists. Indexed lookup by id at top level is a
+        // different operation — Reminders resolves the id directly without walking the
+        // collection — so the inconsistency with the reader is intentional, not a bug.
         let source = """
         tell application "Reminders"
             set theReminder to first reminder whose id is "\(reminderId)"
