@@ -6,12 +6,10 @@ import Foundation
 /// Held as a strong reference by `main.swift` — NSMenuItem.target is weak.
 final class MailItemActionHandler: NSObject {
     @objc func openMessage(_ sender: Any?) {
-        guard
-            let item = sender as? NSMenuItem,
-            let menuId = item.representedObject as? String,
-            let id = Int(menuId)
-        else { return }
-        Self.open(messageId: id)
+        MenuClickHandler.dispatch(sender: sender) { menuId in
+            guard let id = Int(menuId) else { return }
+            Self.open(messageId: id)
+        }
     }
 
     private static func open(messageId: Int) {

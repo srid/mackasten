@@ -6,11 +6,9 @@ import Foundation
 /// Held as a strong reference by `main.swift` — NSMenuItem.target is weak.
 final class ReminderItemActionHandler: NSObject {
     @objc func openReminder(_ sender: Any?) {
-        guard
-            let item = sender as? NSMenuItem,
-            let id = item.representedObject as? String
-        else { return }
-        Self.open(reminderId: id)
+        MenuClickHandler.dispatch(sender: sender) { id in
+            Self.open(reminderId: id)
+        }
     }
 
     private static func open(reminderId: String) {
