@@ -2,7 +2,7 @@ import AppKit
 import Foundation
 
 /// AppKit target that opens a Mail message by id when its menu item is clicked.
-/// Lives at the composition root and is passed to `FlaggedMailContent.make`.
+/// Lives at the composition root and is passed to `SourceAppContent.menuItems`.
 /// Held as a strong reference by `main.swift` — NSMenuItem.target is weak.
 final class MailItemActionHandler: NSObject {
     @objc func openMessage(_ sender: Any?) {

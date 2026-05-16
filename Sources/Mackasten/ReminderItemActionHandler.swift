@@ -2,7 +2,7 @@ import AppKit
 import Foundation
 
 /// AppKit target that opens a Reminder by id when its menu item is clicked.
-/// Lives at the composition root and is passed to `FlaggedReminderContent.make`.
+/// Lives at the composition root and is passed to `SourceAppContent.menuItems`.
 /// Held as a strong reference by `main.swift` — NSMenuItem.target is weak.
 final class ReminderItemActionHandler: NSObject {
     @objc func openReminder(_ sender: Any?) {
