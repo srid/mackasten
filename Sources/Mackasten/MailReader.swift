@@ -36,7 +36,7 @@ enum MailReader {
         var error: NSDictionary?
         let result = appleScript.executeAndReturnError(&error)
         guard error == nil else { return .scriptFailed }
-        let mails = AppleScriptResultParser.parseRows(result) { row in
+        let mails: [MailMessage] = AppleScriptResultParser.parseRows(result) { row in
             guard let subject = row.atIndex(2)?.stringValue else { return nil }
             return MailMessage(id: Int(row.atIndex(1)?.int32Value ?? 0), subject: subject)
         }

@@ -37,7 +37,7 @@ enum ReminderReader {
         var error: NSDictionary?
         let result = appleScript.executeAndReturnError(&error)
         guard error == nil else { return .scriptFailed }
-        let reminders = AppleScriptResultParser.parseRows(result) { row in
+        let reminders: [ReminderItem] = AppleScriptResultParser.parseRows(result) { row in
             guard
                 let id = row.atIndex(1)?.stringValue,
                 let title = row.atIndex(2)?.stringValue
