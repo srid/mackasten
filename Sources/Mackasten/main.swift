@@ -18,12 +18,31 @@ case .mailNotInstalled, .scriptFailed:
     mails = []
 }
 
+let reminders: [ReminderItem]
+switch ReminderReader.read() {
+case let .success(items):
+    reminders = items
+case .remindersNotInstalled, .scriptFailed:
+    reminders = []
+}
+
 let mailActionHandler = MailItemActionHandler()
-let onSelect = MailItemAction(
+let mailOnSelect = MenuItemAction(
     target: mailActionHandler,
     selector: #selector(MailItemActionHandler.openMessage(_:))
 )
 
-MenuBar.install(FlaggedMailContent.make(from: mails, onSelect: onSelect, footer: footer))
+let reminderActionHandler = ReminderItemActionHandler()
+let reminderOnSelect = MenuItemAction(
+    target: reminderActionHandler,
+    selector: #selector(ReminderItemActionHandler.openReminder(_:))
+)
+
+// Quit lives on the mail menu only — duplicating it on both menus would clutter
+// the UI without adding discoverability.
+MenuBar.install([
+    FlaggedMailContent.make(from: mails, onSelect: mailOnSelect, footer: footer),
+    FlaggedReminderContent.make(from: reminders, onSelect: reminderOnSelect),
+])
 
 app.run()

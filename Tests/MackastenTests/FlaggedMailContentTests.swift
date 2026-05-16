@@ -34,7 +34,7 @@ final class FlaggedMailContentTests: XCTestCase {
             @objc func openMessage(_: Any?) {}
         }
         let handler = StubHandler()
-        let onSelect = MailItemAction(target: handler, selector: #selector(StubHandler.openMessage(_:)))
+        let onSelect = MenuItemAction(target: handler, selector: #selector(StubHandler.openMessage(_:)))
         let items = FlaggedMailContent.make(
             from: [MailMessage(id: 42, subject: "subject")],
             onSelect: onSelect

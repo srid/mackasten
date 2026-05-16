@@ -1,14 +1,6 @@
 import AppKit
 import Foundation
 
-/// Couples the target and selector that a menu item should fire on click. They only
-/// make sense together — keeping them in one value stops the content builder from
-/// taking two correlated parameters.
-struct MailItemAction {
-    let target: AnyObject
-    let selector: Selector
-}
-
 /// AppKit target that opens a Mail message by id when its menu item is clicked.
 /// Lives at the composition root and is passed to `FlaggedMailContent.make`.
 /// Held as a strong reference by `main.swift` — NSMenuItem.target is weak.

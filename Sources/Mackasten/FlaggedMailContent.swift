@@ -10,7 +10,7 @@ enum FlaggedMailContent {
 
     static func make(
         from mails: [MailMessage],
-        onSelect: MailItemAction? = nil,
+        onSelect: MenuItemAction? = nil,
         footer: [NSMenuItem] = []
     ) -> MenuBarContent {
         let mailItems: [NSMenuItem] = mails.isEmpty
@@ -24,7 +24,7 @@ enum FlaggedMailContent {
         )
     }
 
-    private static func mailItem(for mail: MailMessage, onSelect: MailItemAction?) -> NSMenuItem {
+    private static func mailItem(for mail: MailMessage, onSelect: MenuItemAction?) -> NSMenuItem {
         let item = NSMenuItem(title: mail.subject, action: onSelect?.selector, keyEquivalent: "")
         item.target = onSelect?.target
         item.representedObject = mail.id
