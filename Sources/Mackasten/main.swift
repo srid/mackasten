@@ -8,7 +8,6 @@ let quit = NSMenuItem(
     action: #selector(NSApplication.terminate(_:)),
     keyEquivalent: "q"
 )
-let footer: [NSMenuItem] = [.separator(), quit]
 
 let mails: [MailMessage]
 switch MailReader.read() {
@@ -38,11 +37,14 @@ let reminderOnSelect = MenuItemAction(
     selector: #selector(ReminderItemActionHandler.openReminder(_:))
 )
 
-// Quit lives on the mail menu only — duplicating it on both menus would clutter
-// the UI without adding discoverability.
-MenuBar.install([
-    FlaggedMailContent.make(from: mails, onSelect: mailOnSelect, footer: footer),
-    FlaggedReminderContent.make(from: reminders, onSelect: reminderOnSelect),
-])
+let mailRows = FlaggedMailContent.menuItems(from: mails, onSelect: mailOnSelect)
+let reminderRows = FlaggedReminderContent.menuItems(from: reminders, onSelect: reminderOnSelect)
+let menuItems = mailRows + [.separator()] + reminderRows + [.separator(), quit]
+
+MenuBar.install(MenuBarContent(
+    symbolName: "flag",
+    accessibilityDescription: "Mackasten — Items requiring focus",
+    menuItems: menuItems
+))
 
 app.run()

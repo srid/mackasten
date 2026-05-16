@@ -1,40 +1,29 @@
 import AppKit
 
-/// Builds the flagged-reminders portion of the menu bar (icon + reminder-list items).
-/// App-lifecycle fixtures like the Quit footer live in the composition root, not here.
+/// Builds the reminder rows of the menu (one row per flagged-incomplete reminder, or
+/// a placeholder when none). The composition root combines these rows with the mail
+/// rows and the Quit footer to form the single status item's menu.
 /// Pure — the AppleScript boundary lives in `ReminderReader`.
 enum FlaggedReminderContent {
-    static let symbolName = "checklist"
-    static let accessibilityDescription = "Mackasten — Reminders requiring focus"
+    static let rowSymbolName = "circle"
     static let emptyPlaceholder = "No reminders requiring focus"
 
-    static func make(
+    static func menuItems(
         from reminders: [ReminderItem],
-        onSelect: MenuItemAction? = nil,
-        footer: [NSMenuItem] = []
-    ) -> MenuBarContent {
-        let reminderItems: [NSMenuItem] = reminders.isEmpty
-            ? [disabledItem(title: emptyPlaceholder)]
-            : reminders.map { reminderItem(for: $0, onSelect: onSelect) }
-
-        return MenuBarContent(
-            symbolName: symbolName,
-            accessibilityDescription: accessibilityDescription,
-            menuItems: reminderItems + footer
-        )
+        onSelect: MenuItemAction? = nil
+    ) -> [NSMenuItem] {
+        if reminders.isEmpty {
+            return [MenuRow.disabled(title: emptyPlaceholder)]
+        }
+        return reminders.map { reminderItem(for: $0, onSelect: onSelect) }
     }
 
     private static func reminderItem(for reminder: ReminderItem, onSelect: MenuItemAction?) -> NSMenuItem {
         let item = NSMenuItem(title: reminder.title, action: onSelect?.selector, keyEquivalent: "")
         item.target = onSelect?.target
         item.representedObject = reminder.id
+        item.image = MenuRow.icon(named: rowSymbolName)
         item.isEnabled = onSelect != nil
-        return item
-    }
-
-    private static func disabledItem(title: String) -> NSMenuItem {
-        let item = NSMenuItem(title: title, action: nil, keyEquivalent: "")
-        item.isEnabled = false
         return item
     }
 }
