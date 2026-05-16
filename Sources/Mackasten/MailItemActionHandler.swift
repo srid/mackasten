@@ -8,7 +8,8 @@ final class MailItemActionHandler: NSObject {
     @objc func openMessage(_ sender: Any?) {
         guard
             let item = sender as? NSMenuItem,
-            let id = item.representedObject as? Int
+            let menuId = item.representedObject as? String,
+            let id = Int(menuId)
         else { return }
         Self.open(messageId: id)
     }

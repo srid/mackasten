@@ -9,8 +9,8 @@ let quit = NSMenuItem(
     keyEquivalent: "q"
 )
 
-let mails = MailReader.read().items
-let reminders = ReminderReader.read().items
+let mails: [MailMessage] = MailReader.read().items
+let reminders: [ReminderItem] = ReminderReader.read().items
 
 let mailActionHandler = MailItemActionHandler()
 let mailOnSelect = MenuItemAction(
@@ -24,8 +24,18 @@ let reminderOnSelect = MenuItemAction(
     selector: #selector(ReminderItemActionHandler.openReminder(_:))
 )
 
-let mailRows = FlaggedMailContent.menuItems(from: mails, onSelect: mailOnSelect)
-let reminderRows = FlaggedReminderContent.menuItems(from: reminders, onSelect: reminderOnSelect)
+let mailRows = SourceAppContent.menuItems(
+    from: mails,
+    rowSymbolName: "envelope",
+    emptyPlaceholder: "No flagged mail",
+    onSelect: mailOnSelect
+)
+let reminderRows = SourceAppContent.menuItems(
+    from: reminders,
+    rowSymbolName: "circle",
+    emptyPlaceholder: "No reminders requiring focus",
+    onSelect: reminderOnSelect
+)
 let menuItems = mailRows + [.separator()] + reminderRows + [.separator(), quit]
 
 MenuBar.install(MenuBarContent(
