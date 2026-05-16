@@ -7,7 +7,10 @@ import Foundation
 final class MailItemActionHandler: NSObject {
     @objc func openMessage(_ sender: Any?) {
         MenuClickHandler.dispatch(sender: sender) { menuId in
-            guard let id = Int(menuId) else { return }
+            guard let id = Int(menuId) else {
+                NSLog("[MailItemActionHandler] menuId is not a valid integer: %@", menuId)
+                return
+            }
             Self.open(messageId: id)
         }
     }
