@@ -10,7 +10,10 @@ enum MenuClickHandler {
         guard
             let item = sender as? NSMenuItem,
             let menuId = item.representedObject as? String
-        else { return }
+        else {
+            NSLog("[MenuClickHandler] dispatch: unexpected sender or missing menuId; sender=%@", String(describing: sender))
+            return
+        }
         open(menuId)
     }
 }
